@@ -1,0 +1,19 @@
+# Directories
+.idea/
+.settings/
+out/
+target/
+build/
+log/
+
+# Files
+*.iml
+*.iws
+*.ipr
+*.ids
+*.jar
+.project
+.classpath
+.DS_Store
+.flattened-pom.xml
+dependency-reduced-pom.xml
