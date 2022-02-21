@@ -1,7 +1,6 @@
 # How To Build
 
 ```
-./mvnw clean
 ./mvnw
 ```
 

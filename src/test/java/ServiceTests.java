@@ -55,7 +55,7 @@ public class ServiceTests {
     );
     Service service = new Service();
     List<Entry<Unit, Integer>> result = service.parseTexts(text1, text2);
-    result = service.top(3, result);
+    result = service.top(100, result);
 
     result.forEach(System.out::println);
 
@@ -79,7 +79,7 @@ public class ServiceTests {
         path1.toFile().getAbsolutePath(),
         path2.toFile().getAbsolutePath()
     );
-    result = service.top(3, result);
+    result = service.top(100, result);
 
     result.forEach(System.out::println);
 
@@ -114,7 +114,7 @@ public class ServiceTests {
     ) {
       result = service.parseInputStream(inputStream);
     }
-    result = service.top(3, result);
+    result = service.top(100, result);
 
     result.forEach(System.out::println);
 

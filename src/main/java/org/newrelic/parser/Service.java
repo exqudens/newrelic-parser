@@ -31,6 +31,7 @@ public class Service {
   Map<Unit, AtomicInteger> entries;
   ExecutorService executor;
   long timeOutMinutes;
+  int topCount;
 
   public Service() {
     entries = new ConcurrentHashMap<>();
@@ -45,6 +46,7 @@ public class Service {
         new ThreadPoolExecutor.CallerRunsPolicy()
     );
     timeOutMinutes = 10L;
+    topCount = 100;
   }
 
   public void run(String... argv) {
@@ -55,7 +57,7 @@ public class Service {
       } else {
         result = parseInputStream(System.in);
       }
-      result = top(3, result);
+      result = top(topCount, result);
       for (Entry<Unit, Integer> entry : result) {
         System.out.println(entry.toString());
       }
@@ -160,6 +162,9 @@ public class Service {
               stringBuilders.add(new StringBuilder());
             } else if (previousIsLetter && stringBuilders.size() == 3) {
               Unit unit = createUnit(stringBuilders);
+              if (unit == null) {
+                throw new Exception("unit == null");
+              }
               entries.putIfAbsent(unit, new AtomicInteger());
               entries.get(unit).incrementAndGet();
               stringBuilders.remove(0);
@@ -172,8 +177,10 @@ public class Service {
 
         if (stringBuilders.size() == 3) {
           Unit unit = createUnit(stringBuilders);
-          entries.putIfAbsent(unit, new AtomicInteger());
-          entries.get(unit).incrementAndGet();
+          if (unit != null) {
+            entries.putIfAbsent(unit, new AtomicInteger());
+            entries.get(unit).incrementAndGet();
+          }
         }
       }
     } catch (Exception e) {
@@ -191,11 +198,19 @@ public class Service {
     }
 
     List<String> words = new ArrayList<>();
+
     for (StringBuilder sb : stringBuilders) {
       String word = sb.toString();
-      words.add(word.toLowerCase());
+      if (!word.isEmpty()) {
+        words.add(word.toLowerCase());
+      }
     }
-    return new Unit(words);
+
+    if (words.size() == 3) {
+      return new Unit(words);
+    } else {
+      return null;
+    }
   }
 
   private List<Entry<Unit, Integer>> sorted() {
